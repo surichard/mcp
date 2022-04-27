@@ -6,7 +6,7 @@ FROM openjdk:8
 LABEL description="Java 8"
 
 # 暴露接口
-EXPOSE 8088
+EXPOSE 8080
 # 将主机中的jar包添加到镜像中
 ADD /jar/app.jar app.jar
 # 运行jar包
