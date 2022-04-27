@@ -1,0 +1,47 @@
+version: "3"
+
+services:
+
+  redis:
+    image: redis:3.2
+    container_name: app_redis
+    volumes:
+      - ../redis/redis.conf:/etc/redis/redis.conf:ro
+      - ../redis/data:/data
+    command:
+      - redis-server
+      - /etc/redis/redis.conf
+    ports:
+      - 6379:6379
+    networks:
+      - appnet
+
+  mysql:
+    image: mysql:5.7
+    container_name: app_mysql
+    volumes:
+      - ../mysql/my.cnf:/etc/mysql/my.cnf:ro
+      - ../mysql/data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    ports:
+      - 3306:3306
+    networks:
+      - appnet
+   
+  webapp:
+    build: ../app
+    container_name: app_web
+    depends_on:
+      - mysql
+      - redis
+    ports:
+      - "8888:8888"
+    networks:
+      - appnet
+    volumes:
+      - ../logs:/logs # 创建容器数据卷
+
+networks:
+  appnet:
+    driver: bridge
